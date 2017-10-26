@@ -436,14 +436,14 @@ MonoBehaviour:
     width: 438
     height: 684
   m_SceneLighting: 1
-  lastFramingTime: 7911.665374482147
+  lastFramingTime: 5060.780739910222
   m_2DMode: 1
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 316.28522, y: 637.6426, z: 0}
+    m_Target: {x: 29.357391, y: 116.25528, z: 0}
     speed: 2
-    m_Value: {x: 316.28522, y: 637.6426, z: 0}
+    m_Value: {x: 29.357391, y: 116.25528, z: 0}
   m_RenderMode: 2
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -470,9 +470,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 195.9755
+    m_Target: 126.52317
     speed: 2
-    m_Value: 195.9755
+    m_Value: 126.52317
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -539,21 +539,21 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 1afcffff00000000
+    m_ExpandedIDs: 80f2ffff1afcffff0000000076260000a8260000b0260000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: Icon
+      m_OriginalName: Icon
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: -4912
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 12}
     m_SearchString: 
