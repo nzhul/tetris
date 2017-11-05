@@ -21,6 +21,35 @@ public class Board : MonoBehaviour
         DrawEmptyCells();
     }
 
+    bool IsWithinBoard(int x, int y)
+    {
+        return (x >= 0 && x < _width && y >= 0);
+    }
+
+    bool IsOccupied(int x, int y, Shape shape)
+    {
+        return (_grid[x, y] != null && _grid[x, y].parent != shape.transform);
+    }
+
+    public bool IsValidPosition(Shape shape)
+    {
+        foreach (Transform child in shape.transform)
+        {
+            Vector2 pos = Vectorf.Round(child.position);
+            if (!IsWithinBoard((int)pos.x, (int)pos.y))
+            {
+                return false;
+            }
+
+            if (IsOccupied((int)pos.x, (int)pos.y, shape))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     void DrawEmptyCells()
     {
         if (_emptySprite != null)
@@ -40,6 +69,20 @@ public class Board : MonoBehaviour
         else
         {
             Debug.Log("WARNING! Please assign the emptySprite object!");
+        }
+    }
+
+    public void StoreShapeInGrid(Shape shape)
+    {
+        if (shape == null)
+        {
+            return;
+        }
+
+        foreach (Transform child in shape.transform)
+        {
+            Vector2 pos = Vectorf.Round(child.position);
+            _grid[(int)pos.x, (int)pos.y] = child;
         }
     }
 }

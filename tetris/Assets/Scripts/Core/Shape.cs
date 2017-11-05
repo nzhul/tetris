@@ -32,7 +32,7 @@ public class Shape : MonoBehaviour {
         Move(Vector3.up);
     }
 
-    public void RoateRight()
+    public void RotateRight()
     {
         if (_canRotate)
         {
@@ -50,6 +50,6 @@ public class Shape : MonoBehaviour {
 
     private void Start()
     {
-        
+
     }
 }
