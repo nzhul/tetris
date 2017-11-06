@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class GameController : MonoBehaviour
 
     Shape _activeShape;
 
-    float _dropInterval = .7f;
+    public float _dropInterval = .7f;
 
     float _timeToDrop;
 
@@ -24,6 +25,10 @@ public class GameController : MonoBehaviour
     float _timeToNextKeyRotate;
     [Range(.02f, 1f)]
     public float _keyRepeatRateRotate = .25f;
+
+    bool _gameOver = false;
+
+    public GameObject _gameOverPanel;
 
     private void Start()
     {
@@ -50,6 +55,11 @@ public class GameController : MonoBehaviour
             {
                 _activeShape = _spawner.SpawnShape();
             }
+        }
+
+        if (_gameOverPanel)
+        {
+            _gameOverPanel.SetActive(false);
         }
     }
 
@@ -95,13 +105,32 @@ public class GameController : MonoBehaviour
 
             if (!_gameBoard.IsValidPosition(_activeShape))
             {
-                LandShape();
+                if (_gameBoard.IsOverLimit(_activeShape))
+                {
+                    GameOver();
+                }
+                else
+                {
+                    LandShape();
+                }
             }
         }
 
         if (!_gameBoard || !_spawner)
         {
             return;
+        }
+    }
+
+    private void GameOver()
+    {
+        _activeShape.MoveUp();
+        _gameOver = true;
+        Debug.LogWarning(_activeShape.name + " is over the limit");
+
+        if (_gameOverPanel)
+        {
+            _gameOverPanel.SetActive(true);
         }
     }
 
@@ -114,15 +143,23 @@ public class GameController : MonoBehaviour
         _activeShape.MoveUp();
         _gameBoard.StoreShapeInGrid(_activeShape);
         _activeShape = _spawner.SpawnShape();
+
+        _gameBoard.ClearAllRows();
     }
 
     private void Update()
     {
-        if (!_gameBoard || !_spawner || !_activeShape)
+        if (!_gameBoard || !_spawner || !_activeShape || _gameOver)
         {
             return;
         }
 
         PlayerInput();
+    }
+
+    public void Restart()
+    {
+        Debug.Log("Restarted");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
