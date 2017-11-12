@@ -30,10 +30,21 @@ public class GameController : MonoBehaviour
 
     public GameObject _gameOverPanel;
 
+    SoundManager _soundManager;
+
+    public IconToggle _rotIconToggle;
+
+    bool _clockWise = true;
+
+    public bool _isPaused = false;
+
+    public GameObject _pausePanel;
+
     private void Start()
     {
         _gameBoard = FindObjectOfType<Board>();
         _spawner = FindObjectOfType<Spawner>();
+        _soundManager = FindObjectOfType<SoundManager>();
         _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
         _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
         _timeToNextKeyRotate = Time.time + _keyRepeatRateRotate;
@@ -41,6 +52,11 @@ public class GameController : MonoBehaviour
         if (!_gameBoard)
         {
             Debug.LogWarning("WARNING! There is no game board defined!");
+        }
+
+        if (!_soundManager)
+        {
+            Debug.LogWarning("WARNING! There is no sound manager defined!");
         }
 
         if (!_spawner)
@@ -61,6 +77,11 @@ public class GameController : MonoBehaviour
         {
             _gameOverPanel.SetActive(false);
         }
+
+        if (_pausePanel)
+        {
+            _pausePanel.SetActive(false);
+        }
     }
 
 
@@ -74,6 +95,11 @@ public class GameController : MonoBehaviour
             if (!_gameBoard.IsValidPosition(_activeShape))
             {
                 _activeShape.MoveLeft();
+                PlaySound(_soundManager._errorSound, .5f);
+            }
+            else
+            {
+                PlaySound(_soundManager._moveSound, .5f);
             }
         }
         else if (Input.GetButton("MoveLeft") && (Time.time > _timeToNextKeyLeftRight) || Input.GetButtonDown("MoveLeft"))
@@ -84,16 +110,28 @@ public class GameController : MonoBehaviour
             if (!_gameBoard.IsValidPosition(_activeShape))
             {
                 _activeShape.MoveRight();
+                PlaySound(_soundManager._errorSound, .5f);
+            }
+            else
+            {
+                PlaySound(_soundManager._moveSound, .5f);
             }
         }
         else if (Input.GetButtonDown("Rotate") && (Time.time > _timeToNextKeyRotate))
         {
-            _activeShape.RotateRight();
+            //_activeShape.RotateRight();
+            _activeShape.RotateClockwise(_clockWise);
             _timeToNextKeyRotate = Time.time + _keyRepeatRateRotate;
 
             if (!_gameBoard.IsValidPosition(_activeShape))
             {
-                _activeShape.RotateLeft();
+                //_activeShape.RotateLeft();
+                _activeShape.RotateClockwise(!_clockWise);
+                PlaySound(_soundManager._errorSound, .5f);
+            }
+            else
+            {
+                PlaySound(_soundManager._moveSound, .5f);
             }
         }
         else if (Input.GetButton("MoveDown") && (Time.time > _timeToNextKeyDown) || (Time.time > _timeToDrop))
@@ -115,10 +153,26 @@ public class GameController : MonoBehaviour
                 }
             }
         }
+        else if (Input.GetButtonDown("ToggleRot"))
+        {
+            ToggleRotDirection();
+        }
+        else if (Input.GetButtonDown("Pause"))
+        {
+            TogglePause();
+        }
 
         if (!_gameBoard || !_spawner)
         {
             return;
+        }
+    }
+
+    private void PlaySound(AudioClip clip, float volMultiplier)
+    {
+        if (_soundManager._fxEnabled && clip)
+        {
+            AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position, Mathf.Clamp(_soundManager._fxVolume * volMultiplier, 0.05f, 1f));
         }
     }
 
@@ -132,6 +186,9 @@ public class GameController : MonoBehaviour
         {
             _gameOverPanel.SetActive(true);
         }
+
+        PlaySound(_soundManager._gameOverSound, 5f);
+        PlaySound(_soundManager._gameOverVocalClip, 5f);
     }
 
     private void LandShape()
@@ -145,11 +202,26 @@ public class GameController : MonoBehaviour
         _activeShape = _spawner.SpawnShape();
 
         _gameBoard.ClearAllRows();
+
+        PlaySound(_soundManager._dropSound, .5f);
+
+        if (_gameBoard._completedRows > 0)
+        {
+            if (_gameBoard._completedRows > 1)
+            {
+                AudioClip randomVocal = _soundManager.GetRandomClip(_soundManager._vocalClips);
+                PlaySound(randomVocal, 1f);
+            }
+
+            PlaySound(_soundManager._clearRowSound, .5f);
+        }
+
+
     }
 
     private void Update()
     {
-        if (!_gameBoard || !_spawner || !_activeShape || _gameOver)
+        if (!_gameBoard || !_soundManager || !_spawner || !_activeShape || _gameOver)
         {
             return;
         }
@@ -159,7 +231,38 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        Debug.Log("Restarted");
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ToggleRotDirection()
+    {
+        _clockWise = !_clockWise;
+        if (_rotIconToggle)
+        {
+            _rotIconToggle.ToggleIcon(_clockWise);
+        }
+    }
+
+    public void TogglePause()
+    {
+        if (_gameOver)
+        {
+            return;
+        }
+
+        _isPaused = !_isPaused;
+
+        if (_pausePanel)
+        {
+            _pausePanel.SetActive(_isPaused);
+
+            if (_soundManager)
+            {
+                _soundManager._musicSource.volume = (_isPaused) ? _soundManager._musicVolume * .25f : _soundManager._musicVolume;
+            }
+
+            Time.timeScale = (_isPaused) ? 0 : 1;
+        }
     }
 }
