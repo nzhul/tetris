@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     Shape _activeShape;
 
     public float _dropInterval = .7f;
+    float _dropIntervalModded;
 
     float _timeToDrop;
 
@@ -32,6 +33,8 @@ public class GameController : MonoBehaviour
 
     SoundManager _soundManager;
 
+    ScoreManager _scoreManager;
+
     public IconToggle _rotIconToggle;
 
     bool _clockWise = true;
@@ -45,6 +48,7 @@ public class GameController : MonoBehaviour
         _gameBoard = FindObjectOfType<Board>();
         _spawner = FindObjectOfType<Spawner>();
         _soundManager = FindObjectOfType<SoundManager>();
+        _scoreManager = FindObjectOfType<ScoreManager>();
         _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
         _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
         _timeToNextKeyRotate = Time.time + _keyRepeatRateRotate;
@@ -57,6 +61,11 @@ public class GameController : MonoBehaviour
         if (!_soundManager)
         {
             Debug.LogWarning("WARNING! There is no sound manager defined!");
+        }
+
+        if (!_scoreManager)
+        {
+            Debug.LogWarning("WARNING! There is no score manager!");
         }
 
         if (!_spawner)
@@ -82,12 +91,14 @@ public class GameController : MonoBehaviour
         {
             _pausePanel.SetActive(false);
         }
+
+        _dropIntervalModded = _dropInterval;
     }
 
 
     private void PlayerInput()
     {
-        if (Input.GetButton("MoveRight") && (Time.time > _timeToNextKeyLeftRight) || Input.GetButtonDown("MoveRight"))
+        if ((Input.GetButton("MoveRight") && (Time.time > _timeToNextKeyLeftRight)) || Input.GetButtonDown("MoveRight"))
         {
             _activeShape.MoveRight();
             _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
@@ -102,7 +113,7 @@ public class GameController : MonoBehaviour
                 PlaySound(_soundManager._moveSound, .5f);
             }
         }
-        else if (Input.GetButton("MoveLeft") && (Time.time > _timeToNextKeyLeftRight) || Input.GetButtonDown("MoveLeft"))
+        else if ((Input.GetButton("MoveLeft") && (Time.time > _timeToNextKeyLeftRight)) || Input.GetButtonDown("MoveLeft"))
         {
             _activeShape.MoveLeft();
             _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
@@ -134,9 +145,9 @@ public class GameController : MonoBehaviour
                 PlaySound(_soundManager._moveSound, .5f);
             }
         }
-        else if (Input.GetButton("MoveDown") && (Time.time > _timeToNextKeyDown) || (Time.time > _timeToDrop))
+        else if ((Input.GetButton("MoveDown") && (Time.time > _timeToNextKeyDown)) || (Time.time > _timeToDrop))
         {
-            _timeToDrop = Time.time + _dropInterval;
+            _timeToDrop = Time.time + _dropIntervalModded;
             _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
 
             _activeShape.MoveDown();
@@ -207,10 +218,19 @@ public class GameController : MonoBehaviour
 
         if (_gameBoard._completedRows > 0)
         {
-            if (_gameBoard._completedRows > 1)
+            _scoreManager.ScoreLines(_gameBoard._completedRows);
+            if (_scoreManager._didLevelUp)
             {
-                AudioClip randomVocal = _soundManager.GetRandomClip(_soundManager._vocalClips);
-                PlaySound(randomVocal, 1f);
+                PlaySound(_soundManager._levelUpVocalClip, 1f);
+                _dropIntervalModded = Mathf.Clamp(_dropInterval - ((float)_scoreManager._level - 1) * 0.05f, 0.05f, 1f);
+            }
+            else
+            {
+                if (_gameBoard._completedRows > 1)
+                {
+                    AudioClip randomVocal = _soundManager.GetRandomClip(_soundManager._vocalClips);
+                    PlaySound(randomVocal, 1f);
+                }
             }
 
             PlaySound(_soundManager._clearRowSound, .5f);
@@ -221,7 +241,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (!_gameBoard || !_soundManager || !_spawner || !_activeShape || _gameOver)
+        if (!_gameBoard || !_soundManager || !_spawner || !_activeShape || !_scoreManager || _gameOver)
         {
             return;
         }

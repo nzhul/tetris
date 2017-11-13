@@ -234,6 +234,52 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 79702087}
+--- !u!1 &108697865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 108697866}
+  - component: {fileID: 108697867}
+  m_Layer: 0
+  m_Name: ScoreManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &108697866
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 108697865}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1024823966}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &108697867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 108697865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bdcaeb02b7dc1e42b9123649c745de1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _level: 1
+  _linesPerLevel: 2
+  _linesText: {fileID: 1472819744}
+  _levelText: {fileID: 2142326525}
+  _scoreText: {fileID: 1020996253}
+  _didLevelUp: 0
 --- !u!1 &155833810
 GameObject:
   m_ObjectHideFlags: 0
@@ -1831,7 +1877,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16add6676ce72f74ebf9c3d270d9076d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _musicEnabled: 0
+  _musicEnabled: 1
   _fxEnabled: 1
   _musicVolume: 1
   _fxVolume: 1
@@ -1850,6 +1896,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c25bfa93ed750344dbf7aeced3a101cc, type: 3}
   - {fileID: 8300000, guid: c606dc050fb8fe345863aafe3c6eff8e, type: 3}
   _gameOverVocalClip: {fileID: 8300000, guid: a372e5226636d1844aee851df3e60d71, type: 3}
+  _levelUpVocalClip: {fileID: 8300000, guid: f858a56a31718124cb9e37262776d4d4, type: 3}
   _musicIconToggle: {fileID: 1639502498}
   _fxIconToggle: {fileID: 982448556}
 --- !u!1 &849859937
@@ -2382,6 +2429,7 @@ Transform:
   m_Children:
   - {fileID: 1793034849}
   - {fileID: 849439510}
+  - {fileID: 108697866}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3172,6 +3220,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1463073506}
+--- !u!114 &1472819744 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114577324915106288, guid: 53e850afd5f3bbd46b745b1dcc8b5721,
+    type: 2}
+  m_PrefabInternal: {fileID: 668843071}
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1483163409
 GameObject:
   m_ObjectHideFlags: 0
@@ -4424,3 +4478,9 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2100668430}
+--- !u!114 &2142326525 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114577324915106288, guid: 53e850afd5f3bbd46b745b1dcc8b5721,
+    type: 2}
+  m_PrefabInternal: {fileID: 1616174587}
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
