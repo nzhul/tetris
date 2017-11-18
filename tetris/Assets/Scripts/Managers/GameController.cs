@@ -10,6 +10,10 @@ public class GameController : MonoBehaviour
 
     Shape _activeShape;
 
+    Ghost _ghost;
+
+    Holder _holder;
+
     public float _dropInterval = .7f;
     float _dropIntervalModded;
 
@@ -52,6 +56,8 @@ public class GameController : MonoBehaviour
         _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
         _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
         _timeToNextKeyRotate = Time.time + _keyRepeatRateRotate;
+        _ghost = FindObjectOfType<Ghost>();
+        _holder = FindObjectOfType<Holder>();
 
         if (!_gameBoard)
         {
@@ -210,6 +216,12 @@ public class GameController : MonoBehaviour
 
         _activeShape.MoveUp();
         _gameBoard.StoreShapeInGrid(_activeShape);
+
+        if (_ghost)
+        {
+            _ghost.Reset();
+        }
+
         _activeShape = _spawner.SpawnShape();
 
         _gameBoard.ClearAllRows();
@@ -249,6 +261,14 @@ public class GameController : MonoBehaviour
         PlayerInput();
     }
 
+    private void LateUpdate()
+    {
+        if (_ghost)
+        {
+            _ghost.DrawGhost(_activeShape, _gameBoard);
+        }
+    }
+
     public void Restart()
     {
         Time.timeScale = 1f;
@@ -283,6 +303,25 @@ public class GameController : MonoBehaviour
             }
 
             Time.timeScale = (_isPaused) ? 0 : 1;
+        }
+    }
+
+    public void Hold()
+    {
+        if (!_holder)
+        {
+            return;
+        }
+
+        if (!_holder._heldShape)
+        {
+            _holder.Catch(_activeShape);
+            _activeShape = _spawner.SpawnShape();
+        }
+
+        if (_ghost)
+        {
+            _ghost.Reset();
         }
     }
 }

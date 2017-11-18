@@ -1,11 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Shape : MonoBehaviour {
-
+public class Shape : MonoBehaviour
+{
 
     public bool _canRotate = true;
+
+    public Vector3 _queueOffset;
 
     void Move(Vector3 moveDirection)
     {
