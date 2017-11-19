@@ -178,6 +178,10 @@ public class GameController : MonoBehaviour
         {
             TogglePause();
         }
+        else if (Input.GetButtonDown("Hold"))
+        {
+            Hold();
+        }
 
         if (!_gameBoard || !_spawner)
         {
@@ -220,6 +224,11 @@ public class GameController : MonoBehaviour
         if (_ghost)
         {
             _ghost.Reset();
+        }
+
+        if (_holder)
+        {
+            _holder._canRelease = true;
         }
 
         _activeShape = _spawner.SpawnShape();
@@ -317,7 +326,23 @@ public class GameController : MonoBehaviour
         {
             _holder.Catch(_activeShape);
             _activeShape = _spawner.SpawnShape();
+            PlaySound(_soundManager._holdSound, 1);
         }
+        else if (_holder._canRelease)
+        {
+            Shape shape = _activeShape;
+            _activeShape = _holder.Release();
+            _activeShape.transform.position = _spawner.transform.position;
+            _holder.Catch(shape);
+            PlaySound(_soundManager._holdSound, 1);
+        }
+        else
+        {
+            Debug.LogWarning("HOLDER WARNING! Wait for cool down!");
+            PlaySound(_soundManager._errorSound, 1);
+        }
+
+
 
         if (_ghost)
         {

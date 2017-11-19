@@ -25,6 +25,8 @@ public class SoundManager : MonoBehaviour
 
     public AudioClip _errorSound;
 
+    public AudioClip _holdSound;
+
     public AudioClip[] _musicClips;
 
     AudioClip _randomMusicClip;
